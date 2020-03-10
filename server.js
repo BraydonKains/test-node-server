@@ -1,9 +1,11 @@
-let http = require('http');
-
+const http = require('http');
 const PORT = 8000;
 
-const sleepy_time = async () => {
-	await sleep(3000);
+const GET = 'GET';
+const POST = 'POST';
+
+const sleep = (m) => {
+	return new Promise(resolve => setTimeout(resolve, m)); 
 }
 
 http.createServer((req, res) => {
@@ -13,13 +15,12 @@ http.createServer((req, res) => {
 		res.end();
 	} 
 	if(req.method === 'POST' && req.url === '/timeout') {
-		sleepy_time();
-		res.writeHead(200, {'Content-Type': 'application/json'});
-		res.end();
+		sleep(3000).then(() => {
+			res.writeHead(200, {'Content-Type': 'text/plain'});
+			res.write('Boom, you lookin for this?');
+			res.end();
+		})
 	}
-	res.writeHead(404, {'Content-Type': 'text/html'});
-	res.write("Not a thing I've made yet");
-	res.end();
 }).listen(PORT, () => {
 	console.log(`listening on ${PORT}`);
 });
